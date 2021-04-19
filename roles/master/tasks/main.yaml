@@ -1,0 +1,56 @@
+- name: install kubectl
+  apt:
+    name: kubectl=1.17.0-00
+    state: present
+    force: yes
+
+- name: hold kubelet kubeadm kubectl
+  command: apt-mark hold kubelet kubeadm kubectl
+
+- name: Get user name
+  become: no
+  command: echo $USER
+  register: user
+    
+- name: Pulling images required for setting up a Kubernetes cluster
+  command: kubeadm config images pull
+
+- name: Resetting kubeadm
+  command: kubeadm reset -f
+
+- name: initialize the cluster
+  command: "kubeadm init --apiserver-advertise-address={{ad_addr}} --pod-network-cidr={{cidr_v}}"
+
+- name: create .kube directory
+  become: no
+  file:
+    path: $HOME/.kube
+    state: directory
+    mode: 0755
+
+- name: copy admin.conf to user's kube config
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "/home/{{ user.stdout }}/.kube/config"
+    remote_src: yes
+
+- name: Use kube config as a regular user
+  shell: chown $(id -u):$(id -g) /home/{{ user.stdout }}/.kube/config
+
+- name: install network add-on (CNI)
+  become: no
+  command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+# - name: Wait for kube-apiserver
+#   wait_for:
+#     port: 6443
+#     delay: 10
+
+- name: Generate join command
+  become: no
+  command: kubeadm token create --print-join-command
+  register: join_command
+    
+- name: Copy join command to local file
+  become: no
+  local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
