@@ -1,0 +1,6 @@
+---
+- name: Setup common packages and applications on all hosts
+  hosts: all
+  become: yes
+  roles:
+    - k8s-common

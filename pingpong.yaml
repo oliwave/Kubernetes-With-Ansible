@@ -1,0 +1,10 @@
+---
+- name: Check the connectivity of EC2Fleet
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: wait for instances to become available
+      wait_for_connection:
+
+    - name: Gather facts for first time
+      setup:
