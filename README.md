@@ -29,7 +29,7 @@ $ sudo apt install ansible
 ## 在遠端伺服器上執行 Kubernetes 的安裝
 
 1. 進入 `Kubernetes-With-Ansible` 專案
-    > $ cd <your_workspace>/k8s_setup
+    > $ cd <your_workspace>/Kubernetes-With-Ansible
 
 2. **將 `hosts` 裡面的伺服器設定成自己的目標**
 
