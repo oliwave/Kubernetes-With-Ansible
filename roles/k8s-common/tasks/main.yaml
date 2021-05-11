@@ -4,7 +4,7 @@
 - name: Commenting Swap entries in /etc/fstab
   replace:
     path: /etc/fstab
-    regexp: '(^/.*swap*)'
+    regexp: "(^/.*swap*)"
     replace: '# \1'
 
 - name: install Docker
@@ -15,17 +15,17 @@
 
 - name: Set up the Docker daemon
   shell:
-   cmd: | 
-     cat <<EOF | sudo tee /etc/docker/daemon.json
-     {
-       "exec-opts": ["native.cgroupdriver=systemd"],
-       "log-driver": "json-file",
-       "log-opts": {
-         "max-size": "100m"
-       },
-       "storage-driver": "overlay2"
-     }
-     EOF
+    cmd: |
+      cat <<EOF | sudo tee /etc/docker/daemon.json
+      {
+        "exec-opts": ["native.cgroupdriver=systemd"],
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "100m"
+        },
+        "storage-driver": "overlay2"
+      }
+      EOF
 
 - name: start Docker service
   service:
@@ -45,9 +45,9 @@
 
 - name: add Kubernetes' APT repository
   apt_repository:
-   repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
-   state: present
-   filename: 'kubernetes'
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+    filename: "kubernetes"
 
 - name: install kubelet & kubeadm
   apt:
