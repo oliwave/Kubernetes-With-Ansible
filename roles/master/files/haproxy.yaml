@@ -13,7 +13,7 @@ spec:
   priorityClassName: system-cluster-critical
   containers:
     - name: kube-haproxy
-      image: docker.io/haproxy
+      image: docker.io/haproxy:1.7-alpine
       resources:
         requests:
           cpu: 100m

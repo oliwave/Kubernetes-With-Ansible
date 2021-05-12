@@ -2,5 +2,4 @@
 - hosts: masters
   become: yes
   roles:
-    - k8s-common
     - master

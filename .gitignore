@@ -1,1 +1,2 @@
-join-command
+worker-join-command
+master-join-command
