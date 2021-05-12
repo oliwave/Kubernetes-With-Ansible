@@ -70,8 +70,6 @@
     path: $HOME/.kube
     state: directory
     mode: 0755
-  delegate_to: "{{ item }}"
-  loop: "{{ groups.leader }}"
 
 - name: copy admin.conf to user's kube config
   copy:
@@ -115,3 +113,30 @@
   local_action: copy content="{{ master_join_command.results[0].stdout }}" dest="./master-join-command"
   delegate_to: "{{ item }}"
   loop: "{{ groups.leader }}"
+
+- name: Copy the join command to server location
+  copy: 
+    src: master-join-command 
+    dest: /tmp/join-command.sh 
+    mode: 0777
+  delegate_to: "{{ item }}"
+  loop: "{{ groups.backup }}"
+      
+- name: Join the node to cluster
+  become: yes
+  command: sh /tmp/join-command.sh
+  delegate_to: "{{ item }}"
+  loop: "{{ groups.backup }}"
+
+- name: copy admin.conf to user's kube config
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "/home/{{ user.stdout }}/.kube/config"
+    remote_src: yes
+  delegate_to: "{{ item }}"
+  loop: "{{ groups.backup }}"
+
+- name: Use kube config as a regular user
+  shell: chown $(id -u):$(id -g) /home/{{ user.stdout }}/.kube/config
+  delegate_to: "{{ item }}"
+  loop: "{{ groups.backup }}"

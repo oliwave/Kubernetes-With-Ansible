@@ -1,6 +1,6 @@
 - name: Copy the join command to server location
   copy: 
-    src: join-command 
+    src: worker-join-command 
     dest: /tmp/join-command.sh 
     mode: 0777
       
