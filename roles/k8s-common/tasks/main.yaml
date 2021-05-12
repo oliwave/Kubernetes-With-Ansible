@@ -55,8 +55,8 @@
     state: present
     force: yes
   loop:
-    - kubelet=1.17.0-00
-    - kubeadm=1.17.0-00
+    - kubelet=1.20.0-00
+    - kubeadm=1.20.0-00
 
 - name: Enabling Bridge Firewall Rule
   shell: "echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables"
