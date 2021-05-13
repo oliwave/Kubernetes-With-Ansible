@@ -90,40 +90,44 @@
   delegate_to: "{{ item }}"
   loop: "{{ groups.leader }}"
 
-- name: Generate master node join command
-  shell: kubeadm token create --print-join-command --certificate-key $(kubeadm init phase upload-certs --upload-certs | tail -n1)
-  register: master_join_command
+- name: Create certificate key for join control plane
+  shell: kubeadm init phase upload-certs --upload-certs | tail -n1
+  register: certificate_key
   delegate_to: "{{ item }}"
   loop: "{{ groups.leader }}"
 
-- name: Generate worker node join command
-  command: kubeadm token create --print-join-command
-  register: worker_join_command
+- name: Generate node join command
+  shell: kubeadm token create --print-join-command  
+  register: join_command
   delegate_to: "{{ item }}"
   loop: "{{ groups.leader }}"
 
 - name: Copy worker join command to local file
   become: no
-  local_action: copy content="{{ worker_join_command.results[0].stdout }}" dest="./worker-join-command"
+  local_action: copy content="{{ join_command.results[0].stdout }}" dest="./worker-join-command"
   delegate_to: "{{ item }}"
   loop: "{{ groups.leader }}"
-
-- name: Copy master join command to local file
+  
+- name: Copy master join command to local file  
   become: no
-  local_action: copy content="{{ master_join_command.results[0].stdout }}" dest="./master-join-command"
+  local_action: copy content="{{ join_command.results[0].stdout }} --control-plane --certificate-key {{ certificate_key.results[0].stdout }} --ignore-preflight-errors=all" dest="./master-join-command"
   delegate_to: "{{ item }}"
   loop: "{{ groups.leader }}"
 
-- name: Copy the join command to server location
+- name: Copy the master join command to server location
   copy: 
     src: master-join-command 
     dest: /tmp/join-command.sh 
     mode: 0777
   delegate_to: "{{ item }}"
   loop: "{{ groups.backup }}"
-      
-- name: Join the node to cluster
-  become: yes
+
+  #- name: kubeadm reset backup 
+  #import_playbook: reset.yaml
+  #vars:
+  #  hosts: backup    
+
+- name: Join the backup to control plane
   command: sh /tmp/join-command.sh
   delegate_to: "{{ item }}"
   loop: "{{ groups.backup }}"
