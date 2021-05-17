@@ -6,3 +6,7 @@
     path: /etc/fstab
     regexp: "(^/.*swap*)"
     replace: '# \1'
+
+- name: Update apt
+  apt:
+    update_cache: yes

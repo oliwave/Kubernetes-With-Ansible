@@ -2,7 +2,6 @@
   apt:
     name: docker.io
     state: present
-    update_cache: yes
 
 - name: Set up the Docker daemon
   shell:

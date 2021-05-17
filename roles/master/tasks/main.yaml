@@ -122,11 +122,6 @@
   delegate_to: "{{ item }}"
   loop: "{{ groups.backup }}"
 
-  #- name: kubeadm reset backup 
-  #import_playbook: reset.yaml
-  #vars:
-  #  hosts: backup    
-
 - name: Join the backup to control plane
   command: sh /tmp/join-command.sh
   delegate_to: "{{ item }}"
