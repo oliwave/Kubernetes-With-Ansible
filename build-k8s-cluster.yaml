@@ -1,0 +1,13 @@
+---
+
+- import_playbook: pingpong.yaml
+
+- hosts: all 
+  become: yes
+  roles:
+    - setup-environment
+    - cri-installation
+    - k8s-common-installation
+
+- import_playbook: k8s-masters.yaml
+- import_playbook: k8s-workers.yaml
