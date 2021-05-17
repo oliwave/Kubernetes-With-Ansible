@@ -15,5 +15,5 @@
     state: present
     force: yes
   loop:
-    - kubelet={{k8s_version}}
-    - kubeadm={{k8s_version}}
+    - "kubelet={{ k8s_version }}"
+    - "kubeadm={{ k8s_version }}"
