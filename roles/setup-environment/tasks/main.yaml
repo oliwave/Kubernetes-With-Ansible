@@ -6,6 +6,3 @@
     path: /etc/fstab
     regexp: "(^/.*swap*)"
     replace: '# \1'
-
-- name: Enabling Bridge Firewall Rule
-  shell: "echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables"
