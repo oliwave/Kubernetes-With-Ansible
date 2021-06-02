@@ -1,7 +1,7 @@
 ---
-- name: Check the connectivity of EC2Fleet
+- name: Check the connectivity of Servers
   hosts: all
-  gather_facts: false
+  gather_facts: no
   tasks:
     - name: wait for instances to become available
       wait_for_connection:

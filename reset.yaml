@@ -1,5 +1,0 @@
-- hosts: "{{ hosts | default('all') }}"
-  become: yes
-  tasks:
-    - name: Reset kubeadm 
-      command: kubeadm reset -f

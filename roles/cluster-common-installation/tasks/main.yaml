@@ -13,10 +13,12 @@
   apt:
     name: "{{ item }}"
     state: present
-    force: yes
   loop:
     - "kubelet={{ k8s_version }}"
     - "kubeadm={{ k8s_version }}"
 
 - name: Enabling Bridge Firewall Rule
   shell: "echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables"
+
+- name: hold kubelet kubeadm
+  command: apt-mark hold kubelet kubeadm

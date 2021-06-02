@@ -1,0 +1,7 @@
+- name: install kubectl
+  apt:
+    name: "kubectl={{ k8s_version}}"
+    state: present
+
+- name: hold kubectl
+  command: apt-mark hold kubectl

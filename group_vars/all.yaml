@@ -1,2 +1,15 @@
 ---
 k8s_version: 1.21.0-00
+
+cni: flannel
+
+cni_cidr: 10.244.0.0/16
+
+# Required when isHAControlPlane is true
+controlPlaneIPs:
+  - 172.20.20.12
+  - 172.20.20.13
+  - 172.20.20.14
+
+controlPlaneEndpoint: 172.20.20.12
+isHAControlPlane: no

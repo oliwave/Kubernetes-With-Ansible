@@ -1,0 +1,8 @@
+- name: Copy the {{server}} join command to server location
+  copy: 
+    src: "{{server}}-join-command"
+    dest: /tmp/join-command.sh 
+    mode: 0777
+
+- name: "{{server}} : run the join command"
+  command: sh /tmp/join-command.sh

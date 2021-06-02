@@ -1,0 +1,17 @@
+- name: Create certificate key for join control plane
+  shell: kubeadm init phase upload-certs --upload-certs | tail -n1
+  register: certificate_key
+  when: "{{ groups.masters | length }} > 1"
+
+- name: Generate node join command
+  shell: kubeadm token create --print-join-command  
+  register: join_command
+
+- name: Copy worker join command to local file
+  become: no
+  local_action: copy content="{{ join_command.stdout }}" dest="./worker-join-command"
+
+- name: Copy master join command to local file  
+  become: no
+  local_action: copy content="{{ join_command.stdout }} --control-plane --certificate-key {{ certificate_key.stdout }} --ignore-preflight-errors=all" dest="./master-join-command"
+  when: "{{ groups.masters | length }} > 1"

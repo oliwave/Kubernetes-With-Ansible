@@ -1,0 +1,16 @@
+- name: create /etc/kubernetes/manifests/ for static pod and /etc/haproxy/ for HAProxy
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /etc/kubernetes/manifests
+    - /etc/haproxy
+
+- name: copy haproxy.cfg and haproxy.yaml to remote
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: haproxy.cfg.j2, dest: /etc/haproxy/haproxy.cfg }
+    - { src: haproxy.yaml, dest: /etc/kubernetes/manifests }
+    - { src: keepalived.yaml.j2, dest: /etc/kubernetes/manifests/keepalived.yaml }

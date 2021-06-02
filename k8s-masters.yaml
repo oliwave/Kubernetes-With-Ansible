@@ -1,5 +1,0 @@
----
-- hosts: masters
-  become: yes
-  roles:
-    - master

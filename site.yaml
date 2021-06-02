@@ -1,5 +1,0 @@
----
-- import_playbook: pingpong.yaml
-- import_playbook: common.yaml
-- import_playbook: k8s-masters.yaml
-- import_playbook: k8s-workers.yaml

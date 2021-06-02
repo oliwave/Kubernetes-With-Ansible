@@ -14,10 +14,25 @@
   become: yes
   roles:
     - control-plane-setup
+    - ha-cluster-setup
+
+- hosts: masters[0]
+  gather_facts: no
+  become: yes
+  roles:
     - init-k8s-cluster
     - kubeconfig-setup
     - cni-setup
     - create-cluster-token
+
+- hosts: masters[1:]
+  gather_facts: no
+  become: yes
+  roles:
+    - name: join-k8s-cluster
+      vars:
+        server: master
+    - kubeconfig-setup
 
 - hosts: workers
   gather_facts: no

@@ -1,0 +1,21 @@
+---
+- name: Get user name
+  become: no
+  command: echo $USER
+  register: user
+
+- name: create .kube directory
+  become: no
+  file:
+    path: $HOME/.kube
+    state: directory
+    mode: 0755
+
+- name: copy admin.conf to user's kube config
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "/home/{{ user.stdout }}/.kube/config"
+    remote_src: yes  
+
+- name: Use kube config as a regular user
+  shell: chown $(id -u):$(id -g) /home/{{ user.stdout }}/.kube/config

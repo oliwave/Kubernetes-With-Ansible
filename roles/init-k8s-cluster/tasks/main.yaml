@@ -1,0 +1,8 @@
+- name: Set up Kubeadm Master Configuration
+  template:
+    src: kubeadm-config.yaml.j2
+    dest: kubeadm-config.yaml
+
+- name: initialize the cluster
+  command: "kubeadm init --config=kubeadm-config.yaml --upload-certs"
+  register: join_command
