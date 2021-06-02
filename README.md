@@ -10,7 +10,7 @@
 
 ## Features
 
-## OS Distributions
+### OS Distributions
 
 - [X] Ubuntu 
   - [X] 20.04
