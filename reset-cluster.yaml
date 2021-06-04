@@ -20,6 +20,17 @@
         state: absent
     #
 
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: remove master and worker join command
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - master-join-command
+        - worker-join-command
+
 - hosts: masters
   gather_facts: no
   become: yes
