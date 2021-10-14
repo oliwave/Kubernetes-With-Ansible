@@ -14,18 +14,18 @@
 
 - [X] Ubuntu 
   - [X] 20.04
-- [ ] CentOS
+<!-- - [ ] CentOS -->
 
 ### CNI (Container Network Interface)
-- [X] Flannel
-  - [X] VXLAN
+- [x] Flannel
+  - [x] VXLAN
   - [ ] host-gw
-- [ ] Calico 
+- [ ] Calico
 
 ### CRI (Container Runtime Interface)
 - [X] Docker
-- [ ] containerd
-- [ ] cri-o
+- [X] containerd
+- [X] cri-o
 
 ## ToolBox
 
@@ -33,6 +33,10 @@
 
 - [X] Support single master control plane - `ansible-playbook -i hosts build-k8s-cluster.yaml -K`
 - [X] Support high available control plane - `ansible-playbook -i hosts build-ha-k8s-cluster.yaml -K`
+
+### Add worker/master node dynamically
+- [X] worker - `ansible-playbook -i hosts add-worker-node.yaml -K`
+- [ ] master
 
 ### Cleanup Cluster
 - [X] Reset the cluster - `ansible-playbook -i hosts reset-cluster.yaml -K`

@@ -1,8 +1,8 @@
-- name: Copy the {{server}} join command to server location
+- name: Copy the {{server_type | default('worker') }} join command to server location
   copy: 
-    src: "{{server}}-join-command"
+    src: "{{server_type | default('worker') }}-join-command"
     dest: /tmp/join-command.sh 
     mode: 0777
 
-- name: "{{server}} : run the join command"
+- name: "{{server_type | default('worker') }} : run the join command"
   command: sh /tmp/join-command.sh

@@ -11,14 +11,19 @@
 
 - name: install kubelet & kubeadm
   apt:
-    name: "{{ item }}"
+    name: "{{ item }}.0-00"
+    force: yes
+    update_cache: yes
     state: present
   loop:
     - "kubelet={{ k8s_version }}"
     - "kubeadm={{ k8s_version }}"
 
-- name: Enabling Bridge Firewall Rule
-  shell: "echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables"
-
 - name: hold kubelet kubeadm
   command: apt-mark hold kubelet kubeadm
+
+- name: Restart kubelet service
+  service:
+    name: kubelet
+    state: restarted
+    enabled: yes

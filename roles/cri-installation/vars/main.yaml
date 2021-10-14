@@ -1,0 +1,9 @@
+---
+# For cri-o installation
+OS: "x{{ansible_distribution}}_{{ansible_distribution_version}}"
+crio_version: "{{k8s_version}}"
+
+cri_list:
+  crio: /var/run/crio/crio.sock
+  containerd: /var/run/containerd/containerd.sock
+  docker: /var/run/docker.sock

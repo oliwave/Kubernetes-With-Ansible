@@ -7,6 +7,25 @@
     regexp: "(^/.*swap*)"
     replace: '# \1'
 
-- name: Update apt
-  apt:
-    update_cache: yes
+- name: Set storage system and network bridge
+  command: "modprobe {{ item }}"
+  loop: 
+    - overlay
+    - br_netfilter
+
+- name: Enabling Bridge Firewall Rule
+  shell: "echo '1' > {{ item }}"
+  loop:
+    - /proc/sys/net/bridge/bridge-nf-call-iptables
+    - /proc/sys/net/ipv4/ip_forward
+    - /proc/sys/net/bridge/bridge-nf-call-ip6tables
+
+- name: Cleanup apt source list
+  file:
+    path: /etc/apt/sources.list.d
+    state: absent
+
+- name: Create apt source list directory
+  file:
+    path: /etc/apt/sources.list.d
+    state: directory

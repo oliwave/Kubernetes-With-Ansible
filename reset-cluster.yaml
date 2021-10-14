@@ -6,19 +6,39 @@
       command: kubeadm reset -f
 
     # Should be extract to a cleanup-cni role
-    - name: Cleanup "{{ cni | default('flannel') }} CNI network bridge"
-      shell: ip link delete cni0
-      ignore_errors: yes
-
-    - name: Cleanup "{{ cni | default('flannel') }} CNI"
-      shell: ip link delete flannel.1
-      ignore_errors: yes
-
     - name: Cleanup "{{ cni | default('flannel') }} CNI info"
       file: 
-        path: /run/flannel
+        path: "{{ item }}"
         state: absent
-    #
+      loop:
+        - /etc/cni
+        - /run/flannel
+        - /var/lib/cni
+    
+    - name: Remove /etc/kubernetes
+      file: 
+        path: /etc/kubernetes
+        state: absent
+
+    # kubelet will look for this file to determine which container runtime should be used
+    - name: Remove /etc/default/kubelet
+      file: 
+        path: /etc/default/kubelet
+        state: absent
+
+    - name: Cleanup "{{ cni | default('flannel') }} CNI network bridge"
+      shell: "ip link set {{ item }} down"
+      ignore_errors: yes
+      loop: 
+        - cni0
+        - flannel.1
+
+    - name: Cleanup "{{ cni | default('flannel') }} CNI"
+      shell: "ip link delete {{ item }}"
+      ignore_errors: yes
+      loop: 
+        - cni0
+        - flannel.1
 
 - hosts: localhost
   gather_facts: no
@@ -35,12 +55,11 @@
   gather_facts: no
   become: yes
   tasks:
-    - name: remove /etc/kubernetes/manifests/, /etc/haproxy/ and .kube
+    - name: remove /etc/haproxy/ and .kube
       file:
         path: "{{ item }}"
         state: absent
       loop:
-        - /etc/kubernetes/manifests
         - /etc/haproxy
-        - /etc/kubernetes/pki
         - ./kubeadm-config.yaml
+        - ./.kube

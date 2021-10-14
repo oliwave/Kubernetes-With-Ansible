@@ -1,5 +1,5 @@
 ---
-- name: install Flannel as cluster CNI
+- name: Install Flannel as cluster CNI
   become: no
   command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
   when: cni == "flannel"

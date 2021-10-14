@@ -1,15 +1,22 @@
 ---
-k8s_version: 1.21.0-00
+k8s_version: "1.21"
+
+# Set it to ture when your system has properly installed the container runtime.
+#
+# Notice that the true value will ignore the value of cri variable.
+hasContainerRuntimeInstalled: no
+
+# Specify your system container runtime [docker|crio]
+cri: docker
 
 cni: flannel
-
 cni_cidr: 10.244.0.0/16
 
-# Required when isHAControlPlane is true
+controlPlaneEndpoint: 172.20.20.12
+isHAControlPlane: no
+
+# Required when isHAControlPlane is true, otherwise just ignore it.
 controlPlaneIPs:
   - 172.20.20.12
   - 172.20.20.13
   - 172.20.20.14
-
-controlPlaneEndpoint: 172.20.20.12
-isHAControlPlane: no

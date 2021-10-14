@@ -1,15 +1,84 @@
+- name: Stop irrelevant container runtime
+  file:
+    path: "{{ item.value }}"
+    state: absent
+  loop: "{{ cri_list | dict2items }}"
+  # If the CRI is docker, do not delete containerd socket
+  when: item.key != cri and not (item.key == "containerd" and cri == "docker")
+
+- name: Cleanup Container Runtime
+  apt:
+    name: "{{ item }}"
+    autoremove: yes
+    state: absent
+  loop:
+    - cri-o-runc
+    - cri-o
+    - docker.io
+  when: not hasContainerRuntimeInstalled 
+
 - name: install Docker
   apt:
     name: docker.io
     state: present
+  when: cri == "docker" and not hasContainerRuntimeInstalled
 
 - name: Set up the Docker daemon
   template:
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
+  when: cri == "docker"
+
+- name: Setup cri and os sources list
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - {src: stable.list.j2, dest: "/etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list"}
+    - {src: crio.list.j2, dest: "/etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:{{ crio_version }}.list"}
+  when: cri == "crio" and not hasContainerRuntimeInstalled
+
+- name: Add OS ditribution apt-key
+  shell: "curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/{{ OS }}/Release.key | \
+          sudo apt-key --keyring /etc/apt/trusted.gpg.d/libcontainers.gpg add -"
+  when: cri == "crio" and not hasContainerRuntimeInstalled
+
+- name: Add cri-o apt-key
+  shell: "curl -L https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:{{ crio_version }}/{{ OS }}/Release.key | \
+          sudo apt-key --keyring /etc/apt/trusted.gpg.d/libcontainers-cri-o.gpg add -"
+  when: cri == "crio" and not hasContainerRuntimeInstalled
+
+- name: Install CRI-O
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  loop:
+    - cri-o
+    - cri-o-runc
+  when: cri == "crio" and not hasContainerRuntimeInstalled
+
+- name: Setup crio.conf
+  copy:
+    src: crio.conf
+    dest: /etc/crio
+    remote_src: no
+  when: cri == "crio"
+
+- name: Force systemd to reload configs
+  systemd:
+    daemon_reload: yes
+
+- name: start crio service
+  service:
+    name: crio
+    state: restarted
+    enabled: yes
+  when: cri == "crio"
 
 - name: start Docker service
   service:
     name: docker
     state: restarted
     enabled: yes
+  when: cri == "docker"

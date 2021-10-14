@@ -4,6 +4,7 @@
   when: "{{ groups.masters | length }} > 1"
 
 - name: Generate node join command
+  become: no
   shell: kubeadm token create --print-join-command  
   register: join_command
 
@@ -13,5 +14,5 @@
 
 - name: Copy master join command to local file  
   become: no
-  local_action: copy content="{{ join_command.stdout }} --control-plane --certificate-key {{ certificate_key.stdout }} --ignore-preflight-errors=all" dest="./master-join-command"
+  local_action: copy content="{{ join_command.stdout }} --control-plane --certificate-key {{ certificate_key.stdout }} --ignore-preflight-errors=DirAvailable--etc-kubernetes-manifests" dest="./master-join-command"
   when: "{{ groups.masters | length }} > 1"

@@ -1,6 +1,8 @@
 - name: install kubectl
   apt:
-    name: "kubectl={{ k8s_version}}"
+    name: "kubectl={{ k8s_version }}.0-00"
+    force: yes
+    update_cache: yes
     state: present
 
 - name: hold kubectl

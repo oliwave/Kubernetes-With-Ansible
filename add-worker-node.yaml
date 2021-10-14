@@ -1,7 +1,7 @@
 ---
 - import_playbook: pingpong.yaml
 
-- hosts: all 
+- hosts: "{{ server }}"
   gather_facts: no
   become: yes
   roles:
@@ -9,17 +9,13 @@
     - cri-installation
     - cluster-common-installation
 
-- hosts: masters
+- hosts: masters[0]
   gather_facts: no
   become: yes
   roles:
-    - control-plane-setup
-    - init-k8s-cluster
-    - kubeconfig-setup
-    - cni-setup
     - create-cluster-token
 
-- hosts: workers
+- hosts: "{{ server }}"
   gather_facts: no
   become: yes
   roles:
