@@ -1,12 +1,14 @@
 # Kubernetes-With-Ansible
 
-透過 [Infrastructure as Code](https://en.wikipedia.org/wiki/Infrastructure_as_code) 來管控與設定系統狀態，並且達成快速自動化部署多台伺服器的一套軟體工具。
+Configure the system in an IaC way to automate the deployment of multiple servers.
 
-- 以 YML 格式撰寫，容易上手與維護
-- 使用 SSH 與遠端伺服器群溝通
-- 不需安裝中間代理(ansible)在遠端伺服器群
+- Written in YML format, easy to use and maintain
 
-基於以上特性，我們可以透過 Anisble 快速的部署 Kubernetes Cluster 。
+- Use SSH to communicate with remote server groups
+
+- No need to install intermediate agents in remote server groups
+
+Based on the above characteristics, we can quickly deploy the Kubernetes Cluster through Anisble.
 
 ## Features
 
